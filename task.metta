@@ -10,10 +10,59 @@
 (Cons (8 (OR (AND A (NOT B) (NOT D))))
 (Cons (9 (AND (OR A B)(AND A (NOT C))))
 (Cons (10 (AND (OR A C) D))
-(Cons (12 (OR (OR B D) (NOT D))) Nil))))))))))
+(Cons (12 (OR (OR B D) (NOT D))) Cons(13(OR A (AND B C) (OR C D)))))))))))))
+
+
+
+
+
 
 
 ;selection function 
+(partialSum 0)
+
+(= (selection (Cons $x $xs) $random)(
+       
+        let* (($h (car-atom $x))
+              ($t (cdr-atom $x))
+                ($sum (+ $partialSum $h))
+                 )
+        
+
+           (if (> (match &self (partialSum $sum) (+ $sum $h)) $random)
+                $x
+                (if (== $t Nil)
+                    Nil
+                   ((selection $xs $random))
+            ))
+                
+                
+               
+            ) 
+        )
+
+
+
+;this function is used to select one parent by using routllet selection method 
+;!(selection (Cons (2 (AND A (OR B (NOT (OR C D)))))
+;(Cons (3 (OR A (AND B C)))
+;(Cons (4 (OR (NOT C) (AND A D)))
+;(Cons (5 (OR A (OR B (OR C (NOT D)))))
+;(Cons (6 (AND (AND A C) (OR C D)))
+;(Cons (7 (OR A (AND B C)))
+;(Cons (8 (OR (AND A (NOT B) (NOT D))))
+;(Cons (9 (AND (OR A B)(AND A (NOT C))))
+;(Cons (10 (AND (OR A C) D))
+;(Cons (12 (OR (OR B D) (NOT D))) Nil)))))))))) 4)
+
+
+
+
+;random number generator 
+(= (random $tot)(
+    (random-int &rng 0 (- $tot 1))
+))
+
 
 
 
@@ -37,9 +86,12 @@
       
 ))
 
-!(crossOver ((OR A (AND B C)) (OR C (AND B C)) 1))
+!(crossOver ((OR A (AND B C) OR D) (OR C (AND B C) AND (NOT B)) 3))
 
 
+
+
+;definition of mutation function
 
 ;mutation function
 (= (mutate ($expr $index))(
@@ -48,20 +100,50 @@
         ($t (cdr-atom $expr))
     )
         (if (== $index 0)
-             (if(== $h (AND A B))
-                (Cons (OR A B) (Cons $t))
-                (
-                    if(== $h AND)
-                     (Cons (OR) (Cons $t))
-                     (if(== $h OR)
-                        (Cons (AND) (Cons $t)))
-                        (Cons (OR A (NOT B)) (Cons $t))
-                )
-             )
-           (Cons $h (mutate ($t (- $index 1))))
+             (if(== $h OR)
+                (Cons AND (Cons $t))
+                    (if(== $h AND)
+                        (Cons OR (Cons $t))
+                        (Cons (NOT $h) (Cons $t))
+                     )
+                    
+                    )
+           (Cons ($h )(mutate ($t (- $index 1))))
         )))
 
-(= (take $expr) $expr)
-!(mutate ((OR A (AND B C)) 1))
+
+ ;this one is used to test the mutation function
+;!(mutate ((OR A (AND B C) AND C) 0))
 
 
+
+
+
+
+
+
+
+
+
+
+
+;this function is used to find the total score of the population
+(= (totalScore (Cons $x $xs))
+   (
+    if (== $xs Nil)
+        (car-atom $x)
+        (+ (car-atom $x) (totalScore $xs))
+   )
+)
+
+
+;!(totalScore (Cons (2 (AND A (OR B (NOT (OR C D)))))
+;(Cons (3 (OR A (AND B C)))
+;(Cons (4 (OR (NOT C) (AND A D)))
+;(Cons (5 (OR A (OR B (OR C (NOT D)))))
+;(Cons (6 (AND (AND A C) (OR C D)))
+;(Cons (7 (OR A (AND B C)))
+;(Cons (8 (OR (AND A (NOT B) (NOT D))))
+;(Cons (9 (AND (OR A B)(AND A (NOT C))))
+;(Cons (10 (AND (OR A C) D))
+;(Cons (12 (OR (OR B D) (NOT D))) Nil)))))))))))
