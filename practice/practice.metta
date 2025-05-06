@@ -5,25 +5,22 @@
     )
     )
 
+;linear search in functional paradigm
+(= (linear () $target) False)
+(= (linear $n $target)
+( 
+      let*
+        (
+            ($h (car-atom $n))
+            ($t (cdr-atom $n))
+        )
 
-(= (linear $exp $target)
-    (let* 
-
-         (
-          ($h (car-atom $exp))
-          ($t (cdr-atom $exp))
-         )
-         
-            (if (== $h $target)
-                     1  
-                (if (== $t ())
-                    0
-                    (linear $t $target)
-                ) 
-            )
+       (if(== $target $h)
+         True
+        (linear $t $target)
+        )
 ))
-
-!(linear (1,2,5,6,7) 2)
+;!(linear (1 3 4 5) 3) 
 
 
 
