@@ -50,3 +50,21 @@
 ))
 ;!(sum4 6 4 3 4)
 
+
+
+(= (concatenate () ()) ())
+(= (concatenate $x $y)
+(
+   let* (
+      ($h1 (car-atom $x))
+      ($h2 (car-atom $y))
+      ($t1 (cdr-atom $x))
+      ($t2 (cdr-atom $y))
+      ($result (concatenate $t1 $t2))
+   )
+   (if(== $h1 ())
+      (concatenate $t2 $t2)
+    (cons-atom $h1 $result))
+))
+;!(concatenate (0 2 5)(1 3 4))
+
