@@ -9,6 +9,22 @@
     ($s ($s $t))
 ))
 
+
+(: (concat ->Expression Expression Expression))
+
+(=(concat $x $y)
+
+   (union-atom $x $y)
+)
+(: (++ -> number number))
+(:(-- -> number number))
+(= (-- $n) (- $n 1))
+
+
+(=( ++ $n) (+ $n 1))
+
+!(++ 3)
+!(-- 3)
 (= (square $x)(* $x $x))
 (= (duplicate $x) ($x $x))
 
