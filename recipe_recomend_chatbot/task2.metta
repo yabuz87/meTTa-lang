@@ -6,7 +6,7 @@
   (HasIngredient "Pasta with Tomato Sauce" "Basil")
   (HasIngredient "Pasta with Tomato Sauce" "Salt")
   (HasIngredient "Pasta with Tomato Sauce" "Pepper")
- (cooking_time_min "Pasta with Tomato Sauce" "Pasta with Tomato Sauce" 15)
+ (cooking_time_min "Pasta with Tomato Sauce" 15)
 
 
 (recipe "burger")
@@ -86,7 +86,7 @@
   (
     if(== (size-atom $expr) 1)
         (let* ($ingredient1  (index-atom $expr 0))
-        (println!  (match &self (HasIngredient $recipe $ingredient2) ($recipe $ingredient2))))
+        (println!  (match &self (,(HasIngredient $recipe $ingredient2)(cooking_time_min $recipe $time)) ($recipe $ingredient2 $time))))
         (if (== (size-atom $expr) 2)
         (match-two (index-atom $expr 0) (index-atom $expr 1))
          (if (== (size-atom $expr) 3)
@@ -94,7 +94,11 @@
                   ($ingredient2 (index-atom $expr 1))
                   ($ingredient3 (index-atom $expr 2)))
                   
-                  (match-three $ingredient1 $ingredient2 $ingredient3))
+                  (
+                    (match-two $ingredient1 $ingredient2)
+                    (match-three $ingredient1 $ingredient2 $ingredient3)
+                  )
+                  )
                   ()
            
            ))
@@ -111,45 +115,55 @@
 
 ;non-determinstically find any recide with one or two ingredient. by matching the recipe with the ingredient
 (= (match-two $ingredient1 $ingredient2)
- ( match &self (HasIngredient $recipe $ingredient1) ( $recipe $ingredient1))
+ ( match &self (,(HasIngredient $recipe $ingredient1)(cooking_time_min $recipe $time)) ( $recipe $ingredient1 $time))
 )
 (= (match-two $ingredient1 $ingredient2)
- (match &self (HasIngredient $recipe $ingredient2) ($recipe $ingredient2))
+ (match &self (,(HasIngredient $recipe $ingredient2)(cooking_time_min $recipe $time)) ($recipe $ingredient2 $time))
  )
  (= (match-two $ingredient1 $ingredient2)
-    ( match &self (HasIngredient $recipe $ingredient1)(HasIngredient $recipe $ingredient2) ($recipe $ingredient1 $ingredient2))
+    ( match &self (,(HasIngredient $recipe $ingredient1)(HasIngredient $recipe $ingredient2)(cooking_time_min $recipe $time)) ($recipe $ingredient1 $ingredient2 $time))
  )
 
 ;this one is to match three ingredients
 
- (= (match-three $ingredient1 $ingredient2 $ingredient3)
-   (match &self (,(HasIngredient $recipe $ingredient1)(HasIngredient $recipe $ingredient2)(HasIngredient $recipe  $ingredient3))  ($recipe $ingredient1  $ingredient2  $ingredient3))
+
+
+
+
+(= (match-three $ingredient1 $ingredient2 $ingredient3)
+   (match &self (, (HasIngredient $recipe $ingredient1) (HasIngredient $recipe $ingredient2) (HasIngredient $recipe  $ingredient3)(cooking_time_min $recipe $time)) ($recipe $ingredient1  $ingredient2  $ingredient3 $time))
    
   )
-
 (= (match-three $ingredient1 $ingredient2 $ingredient3)
-  ((match &self (,(HasIngredient $recipe $ingredient1)(HasIngredient $recipe $ingredient2))  ($recipe $ingredient1 $ingredient2))
-      (match-two $ingredient1 $ingredient2))
+  (match &self (, (HasIngredient $recipe $ingredient1) (HasIngredient $recipe $ingredient2)(cooking_time_min $recipe $time)) ($recipe $ingredient1 $ingredient2 $time))
+      
   )
 
+ 
   (= (match-three $ingredient1 $ingredient2 $ingredient3)
-   ((match &self (,(HasIngredient $recipe $ingredient2)(HasIngredient $recipe  $ingredient3))  ($recipe $ingredient2 $ingredient3))
-   (match-two $ingredient2 $ingredient3))
+   (match &self (, (HasIngredient $recipe $ingredient2)(HasIngredient $recipe  $ingredient3)(cooking_time_min $recipe $time)) ($recipe $ingredient2 $ingredient3 $time))
+  
   )
 
 (= (match-three $ingredient1 $ingredient2 $ingredient3)
-   ((match &self (,(HasIngredient $recipe $ingredient1)(HasIngredient $recipe  $ingredient3))  ($recipe $ingredient1  $ingredient3))
-     (match-two $ingredient1 $ingredient3))
+   (match &self (, (HasIngredient $recipe $ingredient1)(HasIngredient $recipe  $ingredient3)(cooking_time_min $recipe $time)) ($recipe $ingredient1  $ingredient3 $time))
+    
   )
+
+
+(= (match-three $ingredient1 $ingredient2 $ingredient3)
+    ( (match-two $ingredient1 $ingredient2)
+       (match-two $ingredient2 $ingredient3)
+       )
+)
+
+
 
 
 ;!(match-three "Pasta" "Tomato Sauce" "Basil")
 ;!(match-three "Pasta" "Tomato Sauce" "carrot")
 ;!(match-two "Eggs" "Salt")
 ;!(find-recipe ("Pasta" "Tomato Sauce" "Basil" "Olive Oil"))
-;!(find-recipe ("Pasta" "Tomato Sauce" "carrot"))
-!(find-recipe ("Tomato Sauce" "Pepper" "carrot"))
+!(find-recipe ("Pasta" "Dough" "Broth"))
+;!(match-two  "Pepper" "Flour")
 ;!(find-recipe ("Pasta"))
-
-
-;
