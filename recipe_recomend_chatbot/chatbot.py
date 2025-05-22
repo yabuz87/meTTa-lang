@@ -59,7 +59,7 @@ while True:
 
     # Extract only the ingredients
     response = chat_session.send_message(
-        f'Extract only ingredients from this sentence and format them as: ("ingredient1" "ingredient2" "ingredient3").'
+        f'Extract only ingredients from this sentence and format them as: ("ingredient1" "ingredient2" "ingredient3").make sure that each string should start with Upper case'
         f'Do not include anything else. User input: {user_input}'
     )
 
@@ -69,13 +69,19 @@ while True:
 
     # Use extracted ingredients to find a recipe
     user_input2 = metta.run(f'!(find-recipe {model_response1})')
+    # print(user_input2)
 
     # Get recipe details with optimized prompt
     response2 = chat_session.send_message(
-    f'Extract the recipe name and its ingredients from this touple or touples: {user_input2}.note that in the touples only the first element is recipe name others are ingredients'
-    f'Format the response as: "You can make recipe_name with ingredients" you found from the  the touples (use all touples not only one touple).additionally add a cooking time in minutes which is found on the last element of the touple.'
+    f'Extract the recipe name and its ingredients from this touple or touples: {user_input2} it may be only one or many (if is is more than 6 use only the first 4 touple elements).note that in the touples only the first element is recipe name others are ingredients'
+     f'prioritize a touples with many elements'
+    f'Format the response as: "You can make recipe_name with ingredients" you found from the  the touples (use all touples not only one touple).additionally add a cooking time in minutes and deitry restriction  which are  found on the last two element of the touple respectively.'
+    
     f'Avoid  redundant recipe names and ingredients. Only provide unique recipes. from this {user_input2} this is a big mistake if you do not do this.'
     f'User input: {user_input2}'
+    f'don\'t write the same recipe name (if it is the same) in the response just include the unique recipe name and ingredients.'
+    f'prioritize a touples with many elements'
+
 
     
 )
