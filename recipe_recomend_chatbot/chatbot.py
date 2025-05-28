@@ -60,7 +60,8 @@ while True:
     # Extract only the ingredients
     response = chat_session.send_message(
         f'Extract only ingredients from this sentence and format them as: ("ingredient1" "ingredient2" "ingredient3").make sure that each string should start with Upper case'
-        f'Do not include anything else. User input: {user_input}'
+        f'Do not include anything else.User input: {user_input}'
+         f' check and correct the spelling error.'
     )
 
     model_response1 = response.text
